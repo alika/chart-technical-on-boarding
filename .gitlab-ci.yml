@@ -36,7 +36,7 @@ build:
 build-tag:
   stage: build
   only:
-    - /v[0-9]+\.[0-9]+\.[0-9]/
+    - /v[0-9]+\.[0-9]+\.[0-9]+/
   artifacts:
     paths:
       - ${CHART_NAME}/Chart.yaml
@@ -87,11 +87,10 @@ deploy-alpha-staging:
     - helm init --client-only
   script:
     - cd ${CHART_NAME}
-    - export HELM_OPTS="--install --namespace ${NAMESPACE} --values ${VALUES_FILE}"
-    - helm registry upgrade ${CHART_REGISTRY_URI}:alpha -- ${NAMESPACE} ${HELM_OPTS}
+    - helm registry upgrade ${CHART_REGISTRY_URI}:alpha -- ${NAMESPACE} 
+      --install --namespace ${NAMESPACE} --values ${VALUES_FILE}
 
-#TODO: Deploy to a production environment w/correctly managed credentials
-.deploy-stable-production:
+deploy-stable-production:
   stage: deploy
   only:
     - /v[0-9]+\.[0-9]+\.[0-9]+/
@@ -100,8 +99,9 @@ deploy-alpha-staging:
   before_script:
     - mkdir /root/.kube
     - echo ${PRODUCTION_KUBECONFIG} | base64 -d > /root/.kube/config
+    - echo ${PRODUCTION_VALUES} | base64 -d > ${VALUES_FILE}
     - helm init --client-only
   script:
     - cd ${CHART_NAME}
-    - export HELM_OPTS="--install --namespace ${NAMESPACE}"
-    - helm registry upgrade ${CHART_REGISTRY_URI}:stable -- ${NAMESPACE} ${HELM_OPTS}
+    - helm registry upgrade ${CHART_REGISTRY_URI}:stable -- ${NAMESPACE} 
+      --install --namespace ${NAMESPACE} --values ${VALUES_FILE}
