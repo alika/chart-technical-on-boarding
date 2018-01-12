@@ -24,7 +24,6 @@ before_script:
 build:
   stage: build
   only:
-    - master
     - branches
   artifacts:
     paths:
