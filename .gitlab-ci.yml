@@ -79,15 +79,18 @@ deploy-alpha-staging:
     - master
   variables:
     NAMESPACE: ${CHART_NAME}-staging
+    VALUES_FILE: /root/.helm/${CHART_NAME}-staging-values.yaml
   before_script:
     - mkdir /root/.kube
     - echo ${STAGING_KUBECONFIG} | base64 -d > /root/.kube/config
+    - echo ${STAGING_VALUES} | base64 -d > ${VALUES_FILE}
     - helm init --client-only
   script:
     - cd ${CHART_NAME}
-    - export HELM_OPTS="--install --namespace ${NAMESPACE}"
+    - export HELM_OPTS="--install --namespace ${NAMESPACE} --values ${VALUES_FILE}"
     - helm registry upgrade ${CHART_REGISTRY_URI}:alpha -- ${NAMESPACE} ${HELM_OPTS}
 
+#TODO: Deploy to a production environment w/correctly managed credentials
 .deploy-stable-production:
   stage: deploy
   only:
