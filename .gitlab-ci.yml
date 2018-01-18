@@ -119,9 +119,9 @@ validate-config:
     - master
     - /v[0-9]+\.[0-9]+\.[0-9]+/
   script:
-    test -s ${DEPLOY_KUBECONFIG}
-    kubectl --kubeconfig ${DEPLOY_KUBECONFIG} config view || exit $?
-    test -f ${DEPLOY_VALUES}
+    - test -s ${DEPLOY_KUBECONFIG}
+    - kubectl --kubeconfig ${DEPLOY_KUBECONFIG} config view || exit $?
+    - test -f ${DEPLOY_VALUES}
 
 deploy-alpha-staging:
   stage: deploy
